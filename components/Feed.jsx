@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import PromptCard from "./PromptCard"
 
 const Feed = () => {
@@ -13,6 +13,7 @@ const Feed = () => {
             key = {post._id}
             post={post}
             handleTagClick={handleTagClick}
+            
              />
           ))}
           
@@ -24,10 +25,44 @@ const [searchText, setSearchText] = useState('');
 
 const [posts, setPosts] = useState([]);
 
+const [filteredPost, setFilteredPost] = useState(posts);
+
+
+//Search handler 
+const searchHandler = useCallback(() => {
+  const filteredPost = posts.filter((post) => {
+    
+      return ( post.prompt.toLowerCase().includes(searchText.toLowerCase())
+              || post.tag.toLowerCase().includes(searchText.toLowerCase()) 
+              || post.creator.username.toLowerCase().includes(searchText.toLowerCase()) 
+      )
+    
+  })
+  
+  setFilteredPost(filteredPost);
+  
+},[posts,searchText])
+
+// Effect: Search handler
+useEffect(() => {
+  //Debounce search handler
+  const timer = setTimeout(() => {
+    searchHandler()
+  }, 500)
+
+  //Cleanup
+  return () => {
+    clearTimeout(timer)
+  }
+},[searchHandler])
+
+
+
+
+
 const handleSearchChange = (e) => {
-
+  setSearchText(e.target.value)
 }
-
 useEffect (() => {
   const fetchPosts = async() => {
     const responce = await fetch('/api/prompt');
@@ -51,8 +86,10 @@ useEffect (() => {
     </form>
 
     <PromptCardList
-    data={posts}
-    handleTagClick={()=>{}}
+    data={searchText.length > 0 ? filteredPost : posts}
+    handleTagClick={(e)=>{
+      setSearchText(e)
+    }}
      />
     </section>
   )
