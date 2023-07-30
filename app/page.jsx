@@ -1,4 +1,4 @@
-import Feed from "@components/feed"
+import Feed from "@components/Feed"
 
 
 
@@ -11,7 +11,7 @@ const Home = () => {
         <span className="orange_gradient text-center">AI powered Prompts</span>
         </h1>
         <p className="desc text-center">
-            Prompt Maker is open source tool to create, discover and share creative and poerful AI prompts.
+            Prompt Farm is open source tool to discover and share creative and poerful AI prompts.
         </p>
         <Feed />
     </section>
